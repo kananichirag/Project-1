@@ -29,21 +29,28 @@ const SignUp = async (req, res, next) => {
 };
 
 const SignIn = async (req, res) => {
-  const { email,password } = req.body;
+  const { email, password } = req.body;
 
   try {
     const CheckUser = await User.findOne({ email: email });
     if (!CheckUser) {
-      return res.json({ msg: "User Not Found.!!!" , alert:false});
+      return res.json({ msg: "User Not Found.!!!", alert: false });
     }
     const validPass = await bcryptjs.compare(password, CheckUser.password);
     if (!validPass) {
-      return res.json({ msg: "Password is Incorrect..!!" , alert:false});
+      return res.json({ msg: "Password is Incorrect..!!", alert: false });
     } else {
-      res.json({msg:"Login Succfully..!!",alert:true})
+      const SendData = {
+        _id: CheckUser._id,
+        firstname: CheckUser.firstname,
+        lastname: CheckUser.lastname,
+        email: CheckUser.email,
+        image: CheckUser.image,
+      };
+      res.json({ msg: "Login Succfully..!!", alert: true, data: SendData });
     }
   } catch (error) {
-   console.log(error);
+    console.log(error);
   }
 };
 

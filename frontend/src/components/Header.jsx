@@ -1,13 +1,24 @@
 import React, { useState } from "react";
-import { FaUserLarge } from "react-icons/fa6";
+import { FaRegCircleUser } from "react-icons/fa6";
 import { FaCartShopping } from "react-icons/fa6";
 import logo from "../assest/logo.png";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { logOutRedux } from "../redux/userSlice";
+import toast from "react-hot-toast";
 
 function Header() {
   const [showMenu, setShowMenu] = useState(false);
+  const CurrentUser = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+
   const handleShowEvent = () => {
     setShowMenu((val) => !val);
+  };
+
+  const handleLogOut = () => {
+    dispatch(logOutRedux());
+    toast("Log out Succefully.!!!")
   };
 
   return (
@@ -33,22 +44,41 @@ function Header() {
             </div>
           </div>
           <div className="text-slate-700 text-xl " onClick={handleShowEvent}>
-            <div className="border-2 boprder-solid border-slate-500 p-1 rounded-full cursor-pointer">
-              <FaUserLarge />
+            <div className="text-3xl p-1 w-10 h-10 overflow-hidden rounded-full cursor-pointer">
+              {CurrentUser.image ? (
+                <img
+                  className="h-full w-full rounded-full "
+                  src={CurrentUser.image}
+                />
+              ) : (
+                <FaRegCircleUser />
+              )}
             </div>
             {showMenu && (
-              <div className="absolute right-2 px-3 py-2 mt-3 shadow bg-white drop-shadow-md">
+              <div className="absolute right-2 px-2 py-2 mt-3 shadow bg-white drop-shadow-md">
                 <div>
                   <Link
                     to="/new-product"
-                    className="whitespace-nowrap cursor-pointer"
+                    className="whitespace-nowrap cursor-pointer  p-1  rounded hover:text-white hover:bg-blue-500"
                   >
                     New Product
                   </Link>
                 </div>
-                <Link to="/login" className="whitespace-nowrap cursor-pointer">
-                  Login
-                </Link>
+                {CurrentUser.image ? (
+                  <p
+                    className="cursor-pointer  bg-white  text-center mt-1 p-1 rounded hover:bg-red-500 hover:text-white"
+                    onClick={handleLogOut}
+                  >
+                    Log out
+                  </p>
+                ) : (
+                  <Link
+                    to="/login"
+                    className=" cursor-pointer text-center   px-8 py-1 rounded hover:text-white hover:bg-blue-500 "
+                  >
+                    Login
+                  </Link>
+                )}
               </div>
             )}
           </div>

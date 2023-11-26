@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import SignUpImage from "../assest/login-animation.gif";
 import { BiShow } from "react-icons/bi";
 import { BiHide } from "react-icons/bi";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link,  useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import { useSelector,useDispatch } from "react-redux";
+import { loginRedux } from "../redux/userSlice";
 
 
 
@@ -14,7 +16,9 @@ function Login() {
     email: "",
     password: ""
   });
-  console.log(data);
+ 
+
+const dispatch = useDispatch()
 
   const handleShowPassword = () => {
     setShowPassword((preval) => !preval);
@@ -24,8 +28,6 @@ function Login() {
 
   const handleOnChange = (e) => {
     const { name, value } = e.target;
-    //const name = e.target.name;
-    //const value = e.target.value;
     setData({ ...data, [name]: value });
   };
 
@@ -45,9 +47,9 @@ function Login() {
         const ResData = await fetchData.json();
         toast.success(ResData.msg);
         if(ResData.alert){
+          dispatch(loginRedux(ResData))
           navigate('/home')
         }
-
          
     } else {
       toast.error("Enter Value First.!!")
